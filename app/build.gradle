@@ -12,7 +12,7 @@ android {
     def apkVersionTag = System.getenv("TERMUX_STYLING_APP_BUILD__APK_VERSION_TAG") ?: ""
 
      defaultConfig {
-        applicationId "com.termux.styling"
+        applicationId "com.termux.launcher.dev.styling"
         minSdk project.properties.minSdkVersion.toInteger()
         targetSdk project.properties.targetSdkVersion.toInteger()
         versionCode 1000
