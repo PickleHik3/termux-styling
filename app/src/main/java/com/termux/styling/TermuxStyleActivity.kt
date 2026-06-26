@@ -146,7 +146,7 @@ class TermuxStyleActivity : Activity() {
         try {
             val assetsFolder = if (colors) "colors" else "fonts"
 
-            val context = createPackageContext("com.termux", Context.CONTEXT_IGNORE_SECURITY)
+            val context = createPackageContext("io.vaj.tl", Context.CONTEXT_IGNORE_SECURITY)
             val homeDir = File(context.filesDir, "home")
             val termuxDir = File(homeDir, ".termux")
             if (!(termuxDir.isDirectory || termuxDir.mkdirs()))
@@ -177,7 +177,7 @@ class TermuxStyleActivity : Activity() {
             atomicFile.finishWrite(out)
 
             // Note: Must match constant in Term#onCreate():
-            val actionReload = "com.termux.app.reload_style"
+            val actionReload = "io.vaj.tl.app.reload_style"
             val executeIntent = Intent(actionReload)
             executeIntent.putExtra(actionReload, if (colors) "colors" else "font")
             sendBroadcast(executeIntent)
