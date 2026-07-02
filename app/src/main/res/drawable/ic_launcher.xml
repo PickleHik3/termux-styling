@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="108dp"
     android:width="108dp"
@@ -5,30 +6,33 @@
     android:viewportHeight="108">
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="#202837"
         android:pathData="M18,54
                           A36,36 0 1,1 90,54
                           A36,36 0 1,1 18,54 Z" />
 
-    <!-- Keep in sync with adaptive ic_foreground.xml: -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M34,38
-                          h6
-                          l12,16
-                          l-12,16
-                          h-6
-                          l12,-16
-                          "
-        />
+    <!-- Keep in sync with adaptive ic_foreground.xml. Solid mid-gradient color
+         because pre-API-24 launchers cannot render vector gradients. -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.44"
+        android:scaleY="0.44">
 
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M56,66
-                          h18
-                          v4
-                          h-18
-                          "
-        />
+        <!-- droplet outline -->
+        <path
+            android:pathData="M54,17 C54,17 30,47 30,62.5 A24,24 0 0 0 78,62.5 C78,47 54,17 54,17 Z"
+            android:strokeColor="#0CD5B9"
+            android:strokeWidth="7.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
 
+        <!-- inner highlight arc -->
+        <path
+            android:pathData="M41.5,62 A13.5,13.5 0 0 0 52.5,75"
+            android:strokeColor="#0CD5B9"
+            android:strokeWidth="7.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
 </vector>
