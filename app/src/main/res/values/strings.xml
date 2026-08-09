@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Termux:Styling Dev</string>
+    <string name="app_name">TLNix:Styling</string>
     <string name="color_prompt">Choose color</string>
     <string name="font_prompt">Choose font</string>
     <string name="writing_failed">Failed to install file:\n\n</string>
