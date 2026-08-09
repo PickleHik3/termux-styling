@@ -40,7 +40,8 @@ val LAUNCHER_PACKAGE_CANDIDATES: List<String> = listOf(
         "com.termux",
         "io.vaj.tl",
         "com.termux.launcher",
-        "com.termux.launcher.dev"
+        "com.termux.launcher.dev",
+        "com.termux.launcher.nix"
 ).distinct()
 
 /** The launcher derives this from its own package name in `TermuxConstants.ACTION_RELOAD_STYLE`. */

@@ -22,7 +22,7 @@ android {
     }
 
      defaultConfig {
-        applicationId "com.termux.launcher.styling"
+        applicationId "${launcherPackageName}.styling"
         minSdk project.properties.minSdkVersion.toInteger()
         targetSdk project.properties.targetSdkVersion.toInteger()
         versionCode 1000
@@ -75,7 +75,8 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             outputFileName = new File("termux-styling-app_" +
-                    (apkVersionTag ? apkVersionTag : "v" + versionName + "+" + variant.buildType.name) + ".apk")
+                    (apkVersionTag ? apkVersionTag : "v" + versionName + "+" + variant.buildType.name) +
+                    "_" + launcherPackageName + ".apk")
         }
     }
 }

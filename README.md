@@ -14,7 +14,8 @@ required font or color files.
 
 This fork styles the Termux Launcher, which ships several editions with different
 application ids: `com.termux` (main release), `io.vaj.tl` (VAJ),
-`com.termux.launcher` (standalone) and `com.termux.launcher.dev` (dev builds).
+`com.termux.launcher` (standalone), `com.termux.launcher.dev` (dev builds)
+and `com.termux.launcher.nix` (Nix edition).
 
 The target edition is pinned at build time and defaults to `com.termux`:
 

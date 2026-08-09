@@ -14,6 +14,7 @@
         <package android:name="io.vaj.tl" />
         <package android:name="com.termux.launcher" />
         <package android:name="com.termux.launcher.dev" />
+        <package android:name="com.termux.launcher.nix" />
     </queries>
 
     <application
