@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:sharedUserId="com.termux.launcher" >
+    android:sharedUserId="${TERMUX_LAUNCHER_SHARED_USER_ID}" >
 
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!--
+        Android 11+ package visibility filtering: without these the PackageManager probe in
+        TermuxStyleActivity cannot see the launcher editions and reports them as not installed.
+        Keep in sync with TermuxStyleActivity.LAUNCHER_PACKAGE_CANDIDATES.
+    -->
+    <queries>
+        <package android:name="com.termux" />
+        <package android:name="io.vaj.tl" />
+        <package android:name="com.termux.launcher" />
+        <package android:name="com.termux.launcher.dev" />
+    </queries>
 
     <application
         android:allowBackup="true"

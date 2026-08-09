@@ -11,12 +11,32 @@ android {
     def appVersionName = System.getenv("TERMUX_STYLING_APP_BUILD__APP_VERSION_NAME") ?: ""
     def apkVersionTag = System.getenv("TERMUX_STYLING_APP_BUILD__APK_VERSION_TAG") ?: ""
 
+    // The Termux Launcher edition this build prefers. Set via the `termuxLauncherPackageName`
+    // gradle property (see gradle.properties) or the environment variable below. The app still
+    // falls back to probing the other known editions at runtime if this one is not installed.
+    def launcherPackageName = System.getenv("TERMUX_STYLING_APP_BUILD__LAUNCHER_PACKAGE_NAME") ?:
+            (project.findProperty("termuxLauncherPackageName") ?: "com.termux")
+
+    buildFeatures {
+        buildConfig true
+    }
+
      defaultConfig {
         applicationId "com.termux.launcher.styling"
         minSdk project.properties.minSdkVersion.toInteger()
         targetSdk project.properties.targetSdkVersion.toInteger()
         versionCode 1000
         versionName "0.32.1"
+
+        buildConfigField "String", "TERMUX_LAUNCHER_PACKAGE_NAME", "\"${launcherPackageName}\""
+
+        // The launcher declares `android:sharedUserId="${TERMUX_PACKAGE_NAME}"`, i.e. its shared user
+        // id is always its own application id. To be able to write into the launcher's private files
+        // dir this app must declare the exact same shared user id, so it is pinned to the same
+        // edition as the target package above. Note that this fixes the reachable edition at build
+        // time: one styling APK per launcher edition.
+        buildConfigField "String", "TERMUX_LAUNCHER_SHARED_USER_ID", "\"${launcherPackageName}\""
+        manifestPlaceholders = [TERMUX_LAUNCHER_SHARED_USER_ID: launcherPackageName]
 
         if (appVersionName) versionName = appVersionName
         validateVersionName(versionName)

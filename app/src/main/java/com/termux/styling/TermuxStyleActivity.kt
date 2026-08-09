@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -22,6 +23,28 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 const val DEFAULT_FILENAME = "Default"
+
+/**
+ * The Termux Launcher editions this app knows about, in the order they are probed when the package
+ * pinned at build time ([BuildConfig.TERMUX_LAUNCHER_PACKAGE_NAME]) is not installed.
+ *
+ * Note that only the edition matching [BuildConfig.TERMUX_LAUNCHER_SHARED_USER_ID] can actually be
+ * written to: the shared user id in the manifest is fixed at build time, so probing the rest only
+ * serves to produce a precise message instead of a cryptic write failure.
+ *
+ * Keep in sync with the `<queries>` entries in `AndroidManifest.xml`, otherwise the
+ * PackageManager lookups below report "not installed" on Android 11 and later.
+ */
+val LAUNCHER_PACKAGE_CANDIDATES: List<String> = listOf(
+        BuildConfig.TERMUX_LAUNCHER_PACKAGE_NAME,
+        "com.termux",
+        "io.vaj.tl",
+        "com.termux.launcher",
+        "com.termux.launcher.dev"
+).distinct()
+
+/** The launcher derives this from its own package name in `TermuxConstants.ACTION_RELOAD_STYLE`. */
+fun reloadStyleAction(launcherPackageName: String): String = "$launcherPackageName.app.reload_style"
 
 fun capitalize(str: String): String {
     var lastWhitespace = true
@@ -141,12 +164,49 @@ class TermuxStyleActivity : Activity() {
 
     }
 
+    private fun isPackageInstalled(packageName: String): Boolean {
+        return try {
+            packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    /**
+     * The installed launcher edition to style: the package pinned at build time if it is present,
+     * otherwise the first installed entry of [LAUNCHER_PACKAGE_CANDIDATES]. `null` when none of them
+     * is installed.
+     */
+    private fun resolveLauncherPackageName(): String? {
+        return LAUNCHER_PACKAGE_CANDIDATES.firstOrNull { isPackageInstalled(it) }
+    }
+
     private fun copyFile(mCurrentSelectable: Selectable?, colors: Boolean) {
         val outputFile = if (colors) "colors.properties" else "font.ttf"
+
+        val launcherPackageName = resolveLauncherPackageName()
+        if (launcherPackageName == null) {
+            Log.w("termux", "No Termux Launcher package installed out of $LAUNCHER_PACKAGE_CANDIDATES")
+            Toast.makeText(this, R.string.launcher_not_installed, Toast.LENGTH_LONG).show()
+            return
+        }
+
+        // The shared user id is baked into the manifest at build time, so an installed launcher of a
+        // different edition is visible but unreachable. Say so instead of failing on the write.
+        val sharedUserId = BuildConfig.TERMUX_LAUNCHER_SHARED_USER_ID
+        if (launcherPackageName != sharedUserId) {
+            Log.w("termux", "Installed launcher $launcherPackageName is not reachable: " +
+                    "this build shares user id $sharedUserId")
+            val message = resources.getString(R.string.launcher_edition_unreachable, launcherPackageName, sharedUserId)
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            return
+        }
+
         try {
             val assetsFolder = if (colors) "colors" else "fonts"
 
-            val context = createPackageContext("com.termux.launcher.dev", Context.CONTEXT_IGNORE_SECURITY)
+            val context = createPackageContext(launcherPackageName, Context.CONTEXT_IGNORE_SECURITY)
             val homeDir = File(context.filesDir, "home")
             val termuxDir = File(homeDir, ".termux")
             if (!(termuxDir.isDirectory || termuxDir.mkdirs()))
@@ -176,8 +236,9 @@ class TermuxStyleActivity : Activity() {
             }
             atomicFile.finishWrite(out)
 
-            // Note: Must match constant in Term#onCreate():
-            val actionReload = "com.termux.launcher.dev.app.reload_style"
+            // Note: Must match TermuxConstants.TERMUX_ACTIVITY.ACTION_RELOAD_STYLE of the resolved
+            // launcher edition, which derives it from its own package name.
+            val actionReload = reloadStyleAction(launcherPackageName)
             val executeIntent = Intent(actionReload)
             executeIntent.putExtra(actionReload, if (colors) "colors" else "font")
             sendBroadcast(executeIntent)

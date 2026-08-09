@@ -10,6 +10,37 @@ When developing (or packaging), note that this app needs to be signed with the
 same key as the main Termux app in order to have the permission to modify the
 required font or color files.
 
+## Targeting a launcher edition
+
+This fork styles the Termux Launcher, which ships several editions with different
+application ids: `com.termux` (main release), `io.vaj.tl` (VAJ),
+`com.termux.launcher` (standalone) and `com.termux.launcher.dev` (dev builds).
+
+The target edition is pinned at build time and defaults to `com.termux`:
+
+```bash
+./gradlew assembleDebug                                  # targets com.termux
+./gradlew assembleDebug -PtermuxLauncherPackageName=io.vaj.tl
+```
+
+The property (also settable via the
+`TERMUX_STYLING_APP_BUILD__LAUNCHER_PACKAGE_NAME` environment variable, or by
+editing `termuxLauncherPackageName` in `gradle.properties`) feeds both the
+`BuildConfig` target package and the `android:sharedUserId` of the manifest,
+because writing into the launcher's private files directory requires sharing its
+user id, and the launcher's shared user id is always its own application id.
+
+Consequences:
+
+* **One styling APK per launcher edition.** A build pinned to `com.termux`
+  cannot style `io.vaj.tl` and vice versa. It detects this case and says so
+  rather than failing on the file write.
+* **Changing the pinned edition requires an uninstall.** Android rejects an
+  update that changes `sharedUserId`, so the previously installed styling app
+  must be uninstalled before installing a build pinned to a different edition.
+* The styling app must still be signed with the same key as the launcher edition
+  it targets.
+
 ## Installation
 
 Termux:Styling application can be obtained from [F-Droid](https://f-droid.org/en/packages/com.termux.styling/).

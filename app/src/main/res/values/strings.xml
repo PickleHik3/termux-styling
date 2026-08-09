@@ -4,4 +4,6 @@
     <string name="color_prompt">Choose color</string>
     <string name="font_prompt">Choose font</string>
     <string name="writing_failed">Failed to install file:\n\n</string>
+    <string name="launcher_not_installed">No Termux Launcher app found. Install the launcher before choosing a style.</string>
+    <string name="launcher_edition_unreachable">Cannot style %1$s: this Termux:Styling build shares a user id with %2$s only, so it has no access to the files of %1$s. Install a Termux:Styling build made with -PtermuxLauncherPackageName=%1$s.</string>
 </resources>
