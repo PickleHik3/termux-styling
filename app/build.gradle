@@ -25,8 +25,8 @@ android {
         applicationId "${launcherPackageName}.styling"
         minSdk project.properties.minSdkVersion.toInteger()
         targetSdk project.properties.targetSdkVersion.toInteger()
-        versionCode 1000
-        versionName "0.32.1"
+        versionCode 1001
+        versionName "0.32.2"
 
         buildConfigField "String", "TERMUX_LAUNCHER_PACKAGE_NAME", "\"${launcherPackageName}\""
 
