@@ -1,5 +1,13 @@
 # Termux:Styling
 
+> **Fork notice — [Termux Launcher](https://github.com/PickleHik3/termux-launcher) companion builds.**
+> This fork publishes Termux:Styling releases in two editions matching the launcher's editions:
+>
+> - **Termux edition** (`com.termux.styling`, plain release tags, e.g. `v0.32.1`) — pairs with the `com.termux` launcher edition.
+> - **VAJ edition** (`io.vaj.tl.styling`, `-vaj` release tags, e.g. `v0.32.1-vaj`) — pairs with the `io.vaj.tl` launcher edition and installs alongside official Termux and official Termux:Styling.
+>
+> Install the release whose tag matches your launcher edition. Add-ons must share the launcher's signing key and package family, so official F-Droid builds will not pair with the launcher.
+
 [![Build status](https://github.com/termux/termux-styling/workflows/Build/badge.svg)](https://github.com/termux/termux-styling/actions)
 [![Join the chat at https://gitter.im/termux/termux](https://badges.gitter.im/termux/termux.svg)](https://gitter.im/termux/termux)
 
